@@ -1,7 +1,8 @@
 # LearnFlow – Study Planner with Accounts
 
-LearnFlow can run locally as a zero-dependency Node.js app or deploy to Vercel
-with a Neon PostgreSQL database.
+LearnFlow can run locally as a zero-dependency Node.js app with accounts or
+deploy to Vercel as a static study planner that stores progress in the current
+browser.
 
 ## Run locally
 
@@ -12,21 +13,19 @@ weak topics, focus stats, settings and assistant notes are saved automatically.
 
 ## Deploy to Vercel
 
-1. Create a PostgreSQL database with [Neon](https://neon.tech/) and copy its
-   connection string.
-2. In the Vercel project, set `DATABASE_URL` to that connection string.
-3. Set `SESSION_SECRET` to a unique random value of at least 32 characters.
-   For example, generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`.
-4. Set both variables for Production (and Preview if needed), then redeploy.
+Import this GitHub repository in Vercel or connect it to the existing Vercel
+project. Pushes to `main` deploy the static app automatically; no environment
+variables or database setup are required.
 
-Vercel creates the required `users` table automatically on the first API request.
-The database connection and session secret are required for sign-up, login, and
-saved progress. Do not commit either value.
+The Vercel version opens directly into the planner and saves data in the
+browser's local storage. It works without accounts or a backend; saved progress
+is limited to that browser and device. To sync accounts across devices, run the
+local Node.js app with its API or configure a persistent database separately.
 
 ## Project files
 
 - `index.html`, `login.html` - Vercel static pages
-- `api/[...path].js` - Vercel serverless API backed by Neon
+- `api/[...path].js` - optional API source backed by Neon (not deployed by the static Vercel config)
 - `learnflow/server.js` - local Node.js HTTP server
 - `learnflow/public/` - local app pages
 - `learnflow/data/` - local account storage (not committed)
@@ -41,5 +40,6 @@ saved progress. Do not commit either value.
 - `PUT /api/state` - save progress
 - `DELETE /api/account` - delete account (requires password)
 
-Passwords use scrypt with a per-user salt, and sessions use signed HttpOnly
-cookies. Auth endpoints are rate-limited, and cross-origin writes are blocked.
+The local API stores accounts in `learnflow/data/` and must only be used with
+appropriate protections for a public deployment. The static Vercel app does not
+send account data to a server.

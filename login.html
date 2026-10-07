@@ -66,6 +66,7 @@
   </style>
 </head>
 <body>
+  <script>window.LEARNFLOW_STATIC_MODE = true;</script>
   <div class="page">
     <aside class="hero">
       <div class="brand">
@@ -130,6 +131,7 @@
   <script>
     (function () {
       'use strict';
+      if (window.LEARNFLOW_STATIC_MODE === true) { window.location.replace('/'); return; }
       var mode = 'login';
       var $ = function (id) { return document.getElementById(id); };
       var card = $('card'), errorBox = $('error'), submit = $('submit');

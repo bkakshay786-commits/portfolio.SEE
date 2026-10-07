@@ -173,8 +173,12 @@
         submit.disabled = true; var label = submit.textContent; submit.textContent = 'Please wait…';
         fetch(mode === 'register' ? '/api/register' : '/api/login', {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body)
-        }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+        }).then(function (r) {
+          if (r.status === 404) { window.location.replace('/'); return null; }
+          return r.json().then(function (d) { return { ok: r.ok, data: d }; });
+        })
           .then(function (res) {
+            if (!res) return;
             if (!res.ok) throw new Error(res.data.error || 'Something went wrong.');
             window.location.replace('/');
           })

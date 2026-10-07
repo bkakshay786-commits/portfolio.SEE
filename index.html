@@ -1185,7 +1185,7 @@
           document.getElementById('appLoading').style.display = 'none';
           return;
         }
-        function api(url) { return fetch(url, { credentials: 'same-origin' }).then(function (r) { if (r.status === 401) { window.location.replace('/login'); throw new Error('unauth'); } if (!r.ok) throw new Error('Server error'); return r.json(); }); }
+        function api(url) { return fetch(url, { credentials: 'same-origin' }).then(function (r) { if (r.status === 401) { window.location.replace('/login'); throw new Error('unauth'); } if (!r.ok) { var error = new Error('Server error'); error.status = r.status; throw error; } return r.json(); }); }
         return Promise.all([api('/api/me'), api('/api/state')]).then(function (res) {
           setUser(res[0].user);
           try { if (res[1].state) applyState(res[1].state); } catch (e) { console.error('Could not restore saved state', e); showToast('Some saved data could not be restored.'); }
@@ -1196,6 +1196,7 @@
           loaded = true;
         }).catch(function (e) {
           if (e.message === 'unauth') return;
+          if (e.status === 404) { staticMode = true; boot(); return; }
           setSync('error', 'Offline'); document.getElementById('appLoading').textContent = 'Cannot reach the server. Make sure it is running, then refresh.'; throw e;
         }).then(function () { document.getElementById('appLoading').style.display = 'none'; }, function () {});
       }

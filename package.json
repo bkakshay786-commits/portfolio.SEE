@@ -1,0 +1,15 @@
+{
+  "name": "learnflow-vercel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LearnFlow study planner deployed on Vercel",
+  "scripts": {
+    "start": "node learnflow/server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0"
+  }
+}
